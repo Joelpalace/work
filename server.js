@@ -11,11 +11,12 @@ connectDB()
 //middleware
 app.use(express.static('./public'))
 app.use(express.json())
-app.use(errorHandler)
+
 
 // routes
 app.use('/api/v1/tasks',tasks)
 
+app.use(errorHandler);
 
 
  
