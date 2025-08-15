@@ -4,6 +4,7 @@ const tasks = require('./routes/taskRoutes')
 const connectDB = require('./connectDB/connect');
 const dotenv = require('dotenv');
 const errorHandler = require('./middleware/errorHandler')
+const errorHandlerMiddleware = require('./middleware/errors')
 
 dotenv.config()
 connectDB()
@@ -17,13 +18,19 @@ app.use(express.json())
 app.use('/api/v1/tasks',tasks)
 
 app.use(errorHandler);
+app.use(errorHandlerMiddleware); 
 
 
- 
+const port = process.env.PORT || 8007;
+const start = async () => {
+    try {
+        await connectDB(process.env.URL)
+        app.listen(port, () => {
+            console.log(`Server is listening on port ${port}...`);
+        });
+    } catch (error) {
+        console.log(error);
+    } 
+}
 
-
-
-const PORT = 8007;
-app.listen(PORT, () => {
-    console.log(`Server is running on ${PORT}`)
-})
+start()
