@@ -1,39 +1,26 @@
 const Task = require('../model/task')
+const asyncWrapper = require('../middleware/asyncWrapper')
 
 
-const getAllTasks = async (req, res) => {
-    try {
-        const tasks = await Task.find({})
-        res.status(200).json({ tasks })
-    } catch (error) {
-        res.status(500).json({ error: error.message })
-    }
-    
-}
-const createTask = async (req, res) => {
-    try {
+const getAllTasks = asyncWrapper(async (req, res) => {
+    const tasks = await Task.find({})
+    res.status(200).json({ tasks })
+})
+const createTask = asyncWrapper(async (req, res) => {
     const task = await Task.create(req.body)
     res.status(201).json({ task })
-    } catch (error) {
-        res.status(500).json({ error: error.message })
-    }
-}
+})
 
-const getTask = async (req, res) => {
-    try {
+const getTask = asyncWrapper(async (req, res) => {
         const { id: taskID } = req.params
         const task = await Task.findOne({ _id: taskID })
         if (!task) {
             return res.status(404).json({ message: 'Task not found' })
         }
         res.status(200).json({ task })
-    } catch (error) {
-        res.status(500).json({ error: error.message })
-    }
-}
+})
 
-const updateTask = async (req, res) => {
-    try {
+const updateTask = asyncWrapper(async (req, res) => {
         const { id: taskID} = req.params;
         const task = await Task.findOneAndUpdate({_id: taskID}, req.body, {
             new: true,
@@ -43,24 +30,16 @@ const updateTask = async (req, res) => {
             return res.status(404).json({ message: "task does not exist" })     
         }
         res.status(200).json({ task })
-    } catch (error) {
-        res.status(500).json({ message: error.message })
-    }
-} 
+})
 
-const deleteTask = async (req, res) => {
-    try {
+const deleteTask = asyncWrapper(async (req, res) => {
         const {id:taskID} = req.params;
         const task = await Task.findOneAndDelete({_id:taskID})
         if (!task) {
             return res.status(404).json({message: "task does not exist"})
         }
         res.status(200).json({ task })
-    } catch (error) {
-        res.status(500).json({ message: error.message })
-    }
-    
-}
+  })
 
 
 module.exports = {
